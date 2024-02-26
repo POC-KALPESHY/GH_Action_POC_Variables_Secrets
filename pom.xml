@@ -7,9 +7,10 @@
 <groupId>com.cybage.jacoco</groupId>
   <artifactId>simpleTest</artifactId>
   <version>1.0-SNAPSHOT</version>
+  
 
-  <name>Jenkins</name>
-  <!-- FIXME change it to the project's website -->
+  <name>JenkinsSample</name>
+
   <url>http://www.example.com</url>
 
  
