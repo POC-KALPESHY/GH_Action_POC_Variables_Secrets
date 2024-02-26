@@ -4,7 +4,7 @@ pipeline {
         stage('GitHub') {
             steps {
               git credentialsId: 'Jenkins_demo', url: 'https://github.com/POC-KALPESHY/Sonar_Jenkins_Integrate.git'
-              echo 'Pulled GitHub project from master branch' 
+              echo 'Pulled GitHub project from master branch ' 
             }
         }
         stage('maven build') {
