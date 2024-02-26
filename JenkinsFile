@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+    stages {
+        stage('GitHub') {
+            steps {
+              git credentialsId: 'Jenkins_demo', url: 'https://github.com/POC-KALPESHY/Sonar_Jenkins_Integrate.git'
+              echo 'Pulled GitHub project from master branch' 
+            }
+        }
+        stage('maven build') {
+            steps {
+             
+               bat 'mvn clean install'             
+               archiveArtifacts 'target/*.jar'
+               echo 'Maven build and archived artifacts of master branch project'
+            }
+        }
+        stage('SonarQube analysis') {
+             environment {
+                   scannerHome=tool 'Sonarscanner'
+               }
+            steps {
+                
+                    withSonarQubeEnv('SonarQubeServer') {
+                        bat '''sonar-scanner \
+                            -Dsonar.projectName=26042_jenkins_pipeline_sonar\
+                            -Dsonar.projectKey=26042_jenkins_pipeline_sonar\
+                            -Dsonar.sources=src \
+                            -Dsonar.host.url=http://localhost:9000 \
+                            -Dsonar.java.binaries=target/ \
+                            -Dsonar.jacoco.reportPaths=target/jacoco.exec \
+                            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml\
+                            -Dsonar.login=squ_2f11c944f1836e95c4e161ea67048f0c8116c85b'''
+                            
+                 }
+                
+            }
+       }
+    }}
