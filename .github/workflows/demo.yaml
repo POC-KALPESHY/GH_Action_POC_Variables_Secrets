@@ -58,11 +58,18 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ always() }}
     steps:
-      - uses: slackapi/slack-github-action@v1.24.0
-        with:
-          payload: |
-            {
-              "text": "${{ job.status == 'success' ? 'Git push done in the repo. Maven project built successfully.' : 'Git push done in the repo. Maven build failed. Please check the build logs for details.' }}"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    - name: Send Slack notification on success
+      if: ${{ success() }}
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: '{"text": "Git push done in the repo. Maven project built successfully."}'
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    
+    - name: Send Slack notification on failure
+      if: ${{ failure() }}
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: '{"text": "Git push done in the repo. Maven build failed. Please check the build logs for details."}'
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
