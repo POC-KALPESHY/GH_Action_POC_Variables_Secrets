@@ -51,3 +51,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_GHACTION }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_NGROK }}
         run: bash sonar_script.sh
+        # work on slack notification
