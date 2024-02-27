@@ -2,9 +2,8 @@ name: Greeting on variable day
 
 on:
   push:
-    branches: [ "master","repo_variable_secret","sonar_script" ]
-  pull_request:
-    branches: [ "master","repo_variable_secret","sonar_script" ]
+    branches: [ "repo_variable_secret","sonar_script","slack-notification" ]
+  pull_request:    
 
 env:
   DAY_OF_WEEK: Monday
