@@ -2,7 +2,7 @@ name: Greeting on variable day
 
 on:
   push:
-    branches: [ "master","repo_variable_secret","sonar_script","slack-notification" ]
+    branches: [ "master","repo_variable_secret","sonar_script","slack-notification","runner" ]
   pull_request:    
 
 env:
@@ -10,7 +10,7 @@ env:
 
 jobs:
   greeting_job:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       Greeting: Hello
     steps:
