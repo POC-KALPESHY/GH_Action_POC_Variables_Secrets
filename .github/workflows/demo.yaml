@@ -62,7 +62,7 @@ jobs:
         with:
           payload: |
             {
-              "text": ${{ job.status == 'success' && "Git push done in the repo. Maven project built successfully." || "Git push done in the repo. Maven build failed. Please check the build logs for details." }}
+              "text": ${{ job.status == 'success' && 'Git push done in the repo. Maven project built successfully.' || 'Git push done in the repo. Maven build failed. Please check the build logs for details.' }}
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
