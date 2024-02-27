@@ -50,8 +50,8 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_GHACTION }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_NGROK }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-        #run: bash sonar_script.sh   Use this command for ubuntu runner and above incase of windows runner
+        # run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        run: bash sonar_script.sh   Use this command for ubuntu runner and above incase of windows runner
 
   notification:
     name: Send notification on Slack using Webhooks
@@ -60,10 +60,15 @@ jobs:
     if: ${{ always() }}
     steps:
     - name: Print Job Status
-      run: echo "Job status is ${{ job.status }}"
+      run: |
+        if [ ${{ steps.build.outcome }} == 'failure' ]; then
+          echo "Build failed"
+        else
+          echo "Build succeeded"
+        fi
     
     - name: Send Slack notification on success
-      if: ${{ success() }}
+      if: ${{ always() && success() }}
       uses: slackapi/slack-github-action@v1.24.0
       with:
         payload: '{"text": "Git push done in the repo. Maven project built successfully."}'
