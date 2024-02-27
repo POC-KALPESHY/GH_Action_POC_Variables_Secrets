@@ -58,6 +58,9 @@ jobs:
     runs-on: self-hosted
     if: ${{ always() }}
     steps:
+    - name: Print Job Status
+      run: echo "Job status is ${{ job.status }}"
+    
     - name: Send Slack notification on success
       if: ${{ success() }}
       uses: slackapi/slack-github-action@v1.24.0
