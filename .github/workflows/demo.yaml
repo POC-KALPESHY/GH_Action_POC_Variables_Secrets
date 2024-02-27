@@ -2,9 +2,8 @@ name: Greeting on variable day
 
 on:
   push:
-    branches: [ "master","repo_variable_secret","sonar_script" ]
-  pull_request:
-    branches: [ "master","repo_variable_secret","sonar_script" ]
+    branches: [ "repo_variable_secret","sonar_script","slack-notification" ]
+  pull_request:    
 
 env:
   DAY_OF_WEEK: Monday
@@ -19,10 +18,11 @@ jobs:
         if: ${{ env.DAY_OF_WEEK == 'Monday' }}
         run: |
           echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
-          echo "${{vars.MY_DEMO_VARIABLE}} is demo variable"
-          echo "${{secrets.MY_SECRET_DEMO}} is my secret "
+          echo "${{ vars.MY_DEMO_VARIABLE }} is demo variable"
+          echo "${{ secrets.MY_SECRET_DEMO }} is my secret "
         env:
           First_Name: Kalpesh
+
   build:
     name: Build and Sonar Analysis
     runs-on: ubuntu-latest
@@ -51,4 +51,25 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_GHACTION }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_NGROK }}
         run: bash sonar_script.sh
-        # work on slack notification
+
+  notification:
+    name: Send notification on Slack using Webhooks
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+    - name: Send Slack notification on success
+      if: ${{ success() }}
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: '{"text": "Git push done in the repo. Maven project built successfully."}'
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    
+    - name: Send Slack notification on failure
+      if: ${{ failure() }}
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: '{"text": "Git push done in the repo. Maven build failed. Please check the build logs for details."}'
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
