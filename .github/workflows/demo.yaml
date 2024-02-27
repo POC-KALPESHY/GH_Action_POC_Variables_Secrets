@@ -19,10 +19,11 @@ jobs:
         if: ${{ env.DAY_OF_WEEK == 'Monday' }}
         run: |
           echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
-          echo "${{vars.MY_DEMO_VARIABLE}} is demo variable"
-          echo "${{secrets.MY_SECRET_DEMO}} is my secret "
+          echo "${{ vars.MY_DEMO_VARIABLE }} is demo variable"
+          echo "${{ secrets.MY_SECRET_DEMO }} is my secret "
         env:
           First_Name: Kalpesh
+
   build:
     name: Build and Sonar Analysis
     runs-on: ubuntu-latest
@@ -51,4 +52,18 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_GHACTION }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_NGROK }}
         run: bash sonar_script.sh
-        # work on slack notification
+
+  notification:
+    name: Send notification on Slack using Webhooks
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": ${{ job.status == 'success' && "Git push done in the repo. Maven project built successfully." || "Git push done in the repo. Maven build failed. Please check the build logs for details." }}
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
