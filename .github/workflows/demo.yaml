@@ -62,11 +62,11 @@ jobs:
     steps:
     - name: Print Job Status
       run: |
-        if [ ${{ steps.build.outcome }} == 'failure' ]; then
-          echo "Build failed"
-        else
+        if "%ERRORLEVEL%" == "0" (
           echo "Build succeeded"
-        fi
+        ) else (
+          echo "Build failed"
+        )
     
     - name: Send Slack notification on success
       if: ${{ always() && success() }}
@@ -83,3 +83,35 @@ jobs:
         payload: '{"text": "Git push done in the repo. Maven build failed. Please check the build logs for details."}'
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+# Below code is for ubuntu server
+#   notification:
+#     name: Send notification on Slack using Webhooks
+#     needs: build
+#     runs-on: self-hosted
+#     if: ${{ always() }}
+#     steps:
+#     - name: Print Job Status
+#       run: |
+#         if [ ${{ steps.build.outcome }} == 'failure' ]; then
+#           echo "Build failed"
+#         else
+#           echo "Build succeeded"
+#         fi
+    
+#     - name: Send Slack notification on success
+#       if: ${{ always() && success() }}
+#       uses: slackapi/slack-github-action@v1.24.0
+#       with:
+#         payload: '{"text": "Git push done in the repo. Maven project built successfully."}'
+#       env:
+#         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    
+#     - name: Send Slack notification on failure
+#       if: ${{ failure() }}
+#       uses: slackapi/slack-github-action@v1.24.0
+#       with:
+#         payload: '{"text": "Git push done in the repo. Maven build failed. Please check the build logs for details."}'
+#       env:
+#         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
