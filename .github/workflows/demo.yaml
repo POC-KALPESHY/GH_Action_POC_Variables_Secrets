@@ -49,9 +49,9 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_GHACTION }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_NGROK }}
-        # run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_NGROK }}        
           run: bash sonar_script.sh   
+          # run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
        # Use bash command for ubuntu runner and direct/(?) command incase of windows runner
 
   notification:
