@@ -55,18 +55,18 @@ jobs:
        # Use bash command for ubuntu runner and direct/(?) command incase of windows runner
 
   notification:
-    name: Send notification on Slack using Webhooks
-    needs: build
-    runs-on: self-hosted
-    if: ${{ always() }}
-    steps:
+  name: Send notification on Slack using Webhooks
+  needs: build
+  runs-on: self-hosted
+  if: ${{ always() }}
+  steps:
     - name: Print Job Status
       run: |
-        if "%ERRORLEVEL%" == "0" (
-          echo "Build succeeded"
-        ) else (
-          echo "Build failed"
-        )
+        if ($env:LASTEXITCODE -eq 0) {
+          Write-Output "Build succeeded"
+        } else {
+          Write-Output "Build failed"
+        }
     
     - name: Send Slack notification on success
       if: ${{ always() && success() }}
