@@ -50,7 +50,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_GHACTION }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_NGROK }}        
-          run: bash sonar_script.sh          
+        run: bash sonar_script.sh          
                         
   notification:
     name: Send notification on Slack using Webhooks
@@ -58,29 +58,29 @@ jobs:
     runs-on: self-hosted
     if: ${{ always() }}
     steps:
-    - name: Print Job Status
-      run: |
-        if ($env:LASTEXITCODE -eq 0) {
-          Write-Output "Build succeeded"
-        } else {
-          Write-Output "Build failed"
-        }
+      - name: Print Job Status
+        run: |
+          if ($env:LASTEXITCODE -eq 0) {
+            Write-Output "Build succeeded"
+          } else {
+            Write-Output "Build failed"
+          }
     
-    - name: Send Slack notification on success
-      if: ${{ always() && success() }}
-      uses: slackapi/slack-github-action@v1.24.0
-      with:
-        payload: '{"text": "Git push done in the repo. Maven project built successfully."}'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Send Slack notification on success
+        if: ${{ always() && success() }}
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: '{"text": "Git push done in the repo. Maven project built successfully."}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     
-    - name: Send Slack notification on failure
-      if: ${{ failure() }}
-      uses: slackapi/slack-github-action@v1.24.0
-      with:
-        payload: '{"text": "Git push done in the repo. Maven build failed. Please check the build logs for details."}'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Send Slack notification on failure
+        if: ${{ failure() }}
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: '{"text": "Git push done in the repo. Maven build failed. Please check the build logs for details."}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   
 # Below code is for ubuntu server
@@ -90,26 +90,26 @@ jobs:
 #     runs-on: self-hosted
 #     if: ${{ always() }}
 #     steps:
-#     - name: Print Job Status
-#       run: |
-#         if [ ${{ steps.build.outcome }} == 'failure' ]; then
-#           echo "Build failed"
-#         else
-#           echo "Build succeeded"
-#         fi
+#       - name: Print Job Status
+#         run: |
+#           if [ ${{ steps.build.outcome }} == 'failure' ]; then
+#             echo "Build failed"
+#           else
+#             echo "Build succeeded"
+#           fi
     
-#     - name: Send Slack notification on success
-#       if: ${{ always() && success() }}
-#       uses: slackapi/slack-github-action@v1.24.0
-#       with:
-#         payload: '{"text": "Git push done in the repo. Maven project built successfully."}'
-#       env:
-#         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#       - name: Send Slack notification on success
+#         if: ${{ always() && success() }}
+#         uses: slackapi/slack-github-action@v1.24.0
+#         with:
+#           payload: '{"text": "Git push done in the repo. Maven project built successfully."}'
+#         env:
+#           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     
-#     - name: Send Slack notification on failure
-#       if: ${{ failure() }}
-#       uses: slackapi/slack-github-action@v1.24.0
-#       with:
-#         payload: '{"text": "Git push done in the repo. Maven build failed. Please check the build logs for details."}'
-#       env:
-#         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#       - name: Send Slack notification on failure
+#         if: ${{ failure() }}
+#         uses: slackapi/slack-github-action@v1.24.0
+#         with:
+#           payload: '{"text": "Git push done in the repo. Maven build failed. Please check the build logs for details."}'
+#         env:
+#           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
